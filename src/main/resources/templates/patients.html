@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content})}">
+<head>
+  <title>Patients</title>
+</head>
+<body>
+<div th:fragment="content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Patients</h2>
+    <a class="btn btn-primary" href="/patients/new">Add Patient</a>
+  </div>
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-md-8">
+      <input class="form-control" type="text" name="search" th:value="${search}" placeholder="Search by name or phone" />
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-outline-secondary w-100" type="submit">Search</button>
+    </div>
+  </form>
+  <table class="table table-striped">
+    <thead>
+      <tr><th>Name</th><th>Phone</th><th>Age</th><th>Gender</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <tr th:if="${#lists.isEmpty(patients)}">
+        <td colspan="5" class="text-muted">No patients found.</td>
+      </tr>
+      <tr th:each="patient : ${patients}">
+        <td th:text="${patient.name}"></td>
+        <td th:text="${patient.phone}"></td>
+        <td th:text="${patient.age}"></td>
+        <td th:text="${patient.gender}"></td>
+        <td>
+          <a class="btn btn-sm btn-outline-primary" th:href="@{/patients/edit/{id}(id=${patient.patientId})}">Edit</a>
+          <a class="btn btn-sm btn-outline-danger" th:href="@{/patients/delete/{id}(id=${patient.patientId})}">Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

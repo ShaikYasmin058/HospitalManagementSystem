@@ -1,0 +1,160 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout :: layout(~{::content})}"
+>
+  <head>
+    <title>Appointments</title>
+  </head>
+
+  <body>
+    <div th:fragment="content">
+      <div
+        class="page-heading d-flex justify-content-between align-items-center flex-wrap gap-3"
+      >
+        <div>
+          <h2>Appointment Management</h2>
+          <p>Manage patient appointments and schedules.</p>
+        </div>
+
+        <a href="/appointments/new" class="btn btn-primary">
+          <i class="bi bi-calendar-plus me-2"></i>
+          New Appointment
+        </a>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+
+    <h5 class="fw-bold mb-0">All Appointments</h5>
+
+    <form method="get" action="/appointments"
+          class="d-flex flex-wrap gap-2">
+
+        <input type="text"
+               name="keyword"
+               class="form-control"
+               placeholder="Search patient or doctor..."
+               th:value="${keyword}"
+               style="width: 230px;">
+        <input type="date"
+       name="date"
+       class="form-control"
+       th:value="${selectedDate}"
+       style="width: 170px;">
+
+        <select name="status"
+                class="form-select"
+                style="width: 190px;">
+
+            <option value="All"
+                    th:selected="${selectedStatus == 'All'}">
+                All Appointments
+            </option>
+
+            <option value="Scheduled"
+                    th:selected="${selectedStatus == 'Scheduled'}">
+                Scheduled
+            </option>
+
+            <option value="Completed"
+                    th:selected="${selectedStatus == 'Completed'}">
+                Completed
+            </option>
+
+            <option value="Cancelled"
+                    th:selected="${selectedStatus == 'Cancelled'}">
+                Cancelled
+            </option>
+
+        </select>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i> Search
+        </button>
+
+    </form>
+
+</div>
+
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Doctor</th>
+                  <th>Date &amp; Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr th:if="${#lists.isEmpty(appointments)}">
+                  <td colspan="5" class="text-center py-4">
+                    No appointments found.
+                  </td>
+                </tr>
+
+                <tr th:each="appointment : ${appointments}">
+                  <td
+                    th:text="${patientNames.get(appointment.patientId) != null ? patientNames.get(appointment.patientId) : 'Patient not found'}"
+                  ></td>
+
+                  <td
+                    th:text="${doctorNames.get(appointment.doctorId) != null ? doctorNames.get(appointment.doctorId) : 'Doctor not found'}"
+                  ></td>
+
+                  <td
+                    th:text="${#strings.replace(appointment.appointmentDate, 'T', ' ')}"
+                  ></td>
+
+                  <td>
+                    <span
+                      th:text="${appointment.status}"
+                      th:class="${appointment.status == 'Cancelled' ? 'badge bg-danger' :
+               appointment.status == 'Completed' ? 'badge bg-primary' :
+               'badge bg-success'}"
+                    >
+                    </span>
+                  </td>
+
+                  <td>
+                    <a
+                      class="btn btn-sm btn-outline-primary"
+                      th:href="@{/appointments/edit/{id}(id=${appointment.appointmentId})}"
+                    >
+                      <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+
+                    <a
+                      class="btn btn-sm btn-outline-danger ms-1"
+                      th:if="${appointment.status != 'Cancelled'}"
+                      th:href="@{/appointments/cancel/{id}(id=${appointment.appointmentId})}"
+                      onclick="return confirm('Cancel this appointment?');"
+                    >
+                      <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+
+                    <a
+                      class="btn btn-sm btn-outline-primary ms-1"
+                      th:if="${appointment.status == 'Scheduled'}"
+                      th:href="@{/appointments/complete/{id}(id=${appointment.appointmentId})}"
+                      onclick="
+                        return confirm('Mark this appointment as completed?');
+                      "
+                    >
+                      <i class="bi bi-check-circle"></i> Complete
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

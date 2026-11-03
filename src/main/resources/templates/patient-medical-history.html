@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+
+<head>
+    <title>Patient Medical History</title>
+</head>
+
+<body>
+<div th:fragment="content">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Patient Medical History</h2>
+            <p class="text-muted mb-0">
+                Complete medical history of
+                <strong th:text="${patient.name}">Patient Name</strong>
+            </p>
+        </div>
+
+        <a href="/medical-records" class="btn btn-secondary">
+            Back to Medical Records
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5>Patient Information</h5>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>Patient ID:</strong>
+                    <span th:text="${patient.patientId}"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Name:</strong>
+                    <span th:text="${patient.name}"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Age:</strong>
+                    <span th:text="${patient.age}"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Gender:</strong>
+                    <span th:text="${patient.gender}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h5 class="mb-3">Medical Records</h5>
+
+            <div th:if="${#lists.isEmpty(medicalRecords)}"
+                 class="text-center text-muted py-4">
+                No medical history available for this patient.
+            </div>
+
+            <div th:unless="${#lists.isEmpty(medicalRecords)}"
+                 class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Diagnosis</th>
+                            <th>Symptoms</th>
+                            <th>Treatment</th>
+                            <th>Medicines</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="record : ${medicalRecords}">
+
+                            <td th:text="${record.recordDate}"></td>
+
+                            <td th:text="${record.diagnosis}"></td>
+
+                            <td th:text="${record.symptoms}"></td>
+
+                            <td th:text="${record.treatment}"></td>
+
+                            <td th:text="${record.prescribedMedicines}"></td>
+
+                            <td th:text="${record.notes}"></td>
+
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

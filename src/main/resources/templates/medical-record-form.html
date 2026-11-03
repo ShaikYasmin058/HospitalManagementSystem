@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+
+<head>
+    <title>Medical Record Form</title>
+</head>
+
+<body>
+<div th:fragment="content">
+
+    <h2 class="mb-4"
+        th:text="${medicalRecord.recordId == null ? 'Add Medical Record' : 'Edit Medical Record'}">
+        Medical Record Form
+    </h2>
+
+    <form th:action="@{/medical-records}"
+          th:object="${medicalRecord}"
+          method="post"
+          class="card p-4 shadow-sm">
+
+        <input type="hidden" th:field="*{recordId}"/>
+
+        <div th:if="${#fields.hasErrors('*')}"
+             class="alert alert-danger">
+
+            <strong>Please correct these errors:</strong>
+
+            <ul class="mb-0">
+                <li th:each="error : ${#fields.allErrors()}"
+                    th:text="${error}">
+                </li>
+            </ul>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Select Patient</label>
+
+            <select class="form-select"
+                    th:field="*{patientId}"
+                    required>
+
+                <option value="">-- Select Patient --</option>
+
+                <option th:each="patient : ${patients}"
+                        th:value="${patient.patientId}"
+                        th:text="${patient.name + ' (ID: ' + patient.patientId + ')'}">
+                </option>
+
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Diagnosis</label>
+            <input type="text"
+                   class="form-control"
+                   th:field="*{diagnosis}"
+                   placeholder="Enter diagnosis"
+                   required/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Symptoms</label>
+            <textarea class="form-control"
+                      th:field="*{symptoms}"
+                      rows="3"
+                      placeholder="Enter patient symptoms"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Treatment</label>
+            <textarea class="form-control"
+                      th:field="*{treatment}"
+                      rows="3"
+                      placeholder="Enter treatment details"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Prescribed Medicines</label>
+            <textarea class="form-control"
+                      th:field="*{prescribedMedicines}"
+                      rows="3"
+                      placeholder="Enter prescribed medicines"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Record Date</label>
+            <input type="date"
+                   class="form-control"
+                   th:field="*{recordDate}"
+                   required/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Additional Notes</label>
+            <textarea class="form-control"
+                      th:field="*{notes}"
+                      rows="3"
+                      placeholder="Enter additional notes"></textarea>
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary"
+                th:text="${medicalRecord.recordId == null ? 'Save Medical Record' : 'Update Medical Record'}">
+            Save
+        </button>
+
+        <a href="/medical-records"
+           class="btn btn-secondary mt-2">
+            Back to Medical Records
+        </a>
+
+    </form>
+
+</div>
+</body>
+</html>

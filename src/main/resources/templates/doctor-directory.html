@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CarePoint | Find a Doctor</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background: #f4f8fc;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: #102b52;
+            padding: 17px 0;
+        }
+
+        .brand {
+            color: white;
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #102b52, #2874b9);
+            color: white;
+            padding: 55px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-weight: bold;
+        }
+
+        .doctor-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid #e5eaf1;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+            transition: 0.3s;
+            height: 100%;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+        }
+
+        .card-banner {
+            height: 90px;
+            background: linear-gradient(135deg, #dceeff, #edf5ff);
+        }
+
+        .doctor-photo, .doctor-placeholder {
+            width: 115px;
+            height: 115px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid white;
+            margin-top: -58px;
+            background: #e6effa;
+        }
+
+        .doctor-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            color: #2465a5;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .specialty {
+            display: inline-block;
+            background: #e8f3ff;
+            color: #1763a6;
+            padding: 7px 15px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .doctor-info {
+            color: #64748b;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+            margin-bottom: 12px;
+        }
+
+        footer {
+            background: #102b52;
+            color: white;
+            padding: 22px;
+            margin-top: 55px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a class="brand" href="/directory/doctors">CarePoint</a>
+
+        <a href="/login" class="btn btn-light fw-semibold">
+            Login
+        </a>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <h1>Find the Right Doctor for You</h1>
+        <p class="mt-3 mb-0">
+            Meet our healthcare professionals and explore their specializations.
+        </p>
+    </div>
+</section>
+
+<main class="container py-5">
+
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Our Doctors</h2>
+        <p class="text-muted">
+            Explore our available medical professionals.
+        </p>
+    </div>
+
+    <form method="get"
+      action="/directory/doctors"
+      class="row justify-content-center g-3 mb-5">
+
+    <div class="col-md-5">
+        <input type="text"
+               class="form-control"
+               name="search"
+               th:value="${search}"
+               placeholder="Search by doctor name...">
+    </div>
+
+    <div class="col-md-4">
+        <select class="form-select"
+                name="specialization">
+
+            <option value="">All Specializations</option>
+
+            <option th:each="spec : ${specializations}"
+                    th:value="${spec}"
+                    th:text="${spec}"
+                    th:selected="${spec == selectedSpecialization}">
+            </option>
+
+        </select>
+    </div>
+
+    <div class="col-md-3 d-flex gap-2">
+        <button class="btn btn-primary flex-fill" type="submit">
+            Search
+        </button>
+
+        <a href="/directory/doctors"
+           class="btn btn-outline-secondary flex-fill">
+            Clear
+        </a>
+    </div>
+
+</form>
+
+    <p class="text-muted mb-4"
+       th:text="${#lists.size(doctors)} + ' doctors available'">
+        Doctors available
+    </p>
+
+    <div class="row g-4">
+
+        <div class="col-xl-4 col-md-6"
+             th:each="doctor : ${doctors}">
+
+            <div class="doctor-card">
+
+                <div class="card-banner"></div>
+
+                <div class="text-center px-3">
+
+                    <img th:if="${doctor.photo != null and !doctor.photo.isEmpty()}"
+                         th:src="@{${doctor.photo}}"
+                         class="doctor-photo"
+                         alt="Doctor profile photo">
+
+                    <div th:unless="${doctor.photo != null and !doctor.photo.isEmpty()}"
+                         class="doctor-placeholder">
+                        👨‍⚕️
+                    </div>
+
+                    <h5 class="fw-bold mt-3 mb-2"
+                        th:text="'Dr. ' + ${doctor.name}">
+                        Doctor Name
+                    </h5>
+
+                    <span class="specialty"
+                          th:text="${doctor.specialization}">
+                        Specialization
+                    </span>
+                    <div class="mt-3">
+    <span th:if="${doctor.availabilityStatus == 'AVAILABLE'}"
+          class="badge bg-success">
+        Available
+    </span>
+
+    <span th:if="${doctor.availabilityStatus == 'ON_LEAVE'}"
+          class="badge bg-warning text-dark">
+        On Leave
+    </span>
+
+    <span th:if="${doctor.availabilityStatus == 'UNAVAILABLE'}"
+          class="badge bg-secondary">
+        Unavailable
+    </span>
+</div>
+
+                </div>
+
+                <div class="px-4 pt-4 pb-3">
+
+                    <p class="doctor-info">
+                        <strong>Phone:</strong>
+                        <span th:text="${doctor.phone}"></span>
+                    </p>
+
+                    <p class="doctor-info">
+                        <strong>Email:</strong>
+                        <span th:text="${doctor.email}"></span>
+                    </p>
+
+                    <p class="doctor-info mb-0">
+                        <strong>Doctor ID:</strong>
+                        <span th:text="${doctor.doctorId}"></span>
+                    </p>
+                    <div class="mt-3">
+    <a th:href="@{/directory/doctors/{id}(id=${doctor.doctorId})}"
+       class="btn btn-primary w-100">
+        View Full Profile →
+    </a>
+</div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(doctors)}"
+             class="col-12 text-center py-5">
+
+            <h5 class="text-muted">No doctors available</h5>
+            <p class="text-muted">
+                Please try another search.
+            </p>
+
+        </div>
+
+    </div>
+
+</main>
+
+<footer>
+    <p class="mb-0">
+        © 2026 CarePoint Hospital Management System
+    </p>
+</footer>
+
+</body>
+</html>

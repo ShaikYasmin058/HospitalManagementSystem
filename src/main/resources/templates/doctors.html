@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+
+<head>
+    <title>CarePoint - Our Doctors</title>
+</head>
+
+<body>
+<div th:fragment="content">
+
+    <style>
+        .doctor-header {
+            background: linear-gradient(135deg, #102b52, #2874b9);
+            color: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 28px;
+        }
+
+        .doctor-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid #e5eaf1;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+            transition: 0.3s;
+            height: 100%;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+        }
+
+        .doctor-card-top {
+            height: 90px;
+            background: linear-gradient(135deg, #dceeff, #edf5ff);
+        }
+
+        .doctor-photo {
+            width: 115px;
+            height: 115px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid white;
+            margin-top: -58px;
+            background: #edf2f7;
+        }
+
+        .doctor-placeholder {
+            width: 115px;
+            height: 115px;
+            border-radius: 50%;
+            border: 5px solid white;
+            margin-top: -58px;
+            background: #e6effa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            color: #2465a5;
+        }
+
+        .doctor-specialty {
+            display: inline-block;
+            background: #e8f3ff;
+            color: #1763a6;
+            padding: 7px 15px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .doctor-info {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .doctor-info i {
+            color: #2874b9;
+            margin-right: 8px;
+        }
+
+        .doctor-actions {
+            border-top: 1px solid #edf0f5;
+            padding: 15px;
+        }
+    </style>
+
+    <div class="doctor-header">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h2 class="fw-bold mb-2">Meet Our Doctors</h2>
+                <p class="mb-0">
+                    Find experienced healthcare professionals at CarePoint.
+                </p>
+            </div>
+
+            <a class="btn btn-light fw-semibold"
+               href="/doctors/new">
+                + Add Doctor
+            </a>
+        </div>
+    </div>
+
+    <form method="get" action="/doctors" class="mb-4">
+        <div class="input-group">
+            <input class="form-control"
+                   type="text"
+                   name="search"
+                   th:value="${search}"
+                   placeholder="Search doctor by name or specialization...">
+
+            <button class="btn btn-primary" type="submit">
+                Search
+            </button>
+
+            <a class="btn btn-outline-secondary"
+               href="/doctors">
+                Clear
+            </a>
+        </div>
+    </form>
+
+    <div class="mb-4">
+        <h4 class="fw-bold">Our Medical Specialists</h4>
+        <p class="text-muted"
+           th:text="${#lists.size(doctors)} + ' doctors available'">
+            Doctors available
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-xl-4 col-md-6"
+             th:each="doctor : ${doctors}">
+
+            <div class="doctor-card">
+
+                <div class="doctor-card-top"></div>
+
+                <div class="text-center px-3">
+
+                    <img th:if="${doctor.photo != null and !doctor.photo.isEmpty()}"
+                         th:src="@{${doctor.photo}}"
+                         class="doctor-photo"
+                         alt="Doctor photo">
+
+                    <div th:unless="${doctor.photo != null and !doctor.photo.isEmpty()}"
+                         class="doctor-placeholder mx-auto">
+                        <span>👨‍⚕️</span>
+                    </div>
+
+                    <h5 class="fw-bold mt-3 mb-2"
+                        th:text="'Dr. ' + ${doctor.name}">
+                        Doctor Name
+                    </h5>
+
+                    <span class="doctor-specialty"
+                          th:text="${doctor.specialization}">
+                        Specialization
+                    </span>
+
+                </div>
+
+                <div class="px-4 pt-4">
+
+                    <p class="doctor-info">
+                        <i class="bi bi-telephone-fill"></i>
+                        <span th:text="${doctor.phone}">Phone</span>
+                    </p>
+
+                    <p class="doctor-info">
+                        <i class="bi bi-envelope-fill"></i>
+                        <span th:text="${doctor.email}">Email</span>
+                    </p>
+
+                    <p class="doctor-info">
+                        <i class="bi bi-person-badge-fill"></i>
+                        Doctor ID:
+                        <strong th:text="${doctor.doctorId}"></strong>
+                    </p>
+
+                </div>
+
+                <div class="doctor-actions d-flex justify-content-between gap-2">
+
+                    <a class="btn btn-sm btn-outline-primary flex-fill"
+                       th:href="@{/doctors/edit/{id}(id=${doctor.doctorId})}">
+                        Edit
+                    </a>
+
+                    <a class="btn btn-sm btn-outline-danger flex-fill"
+                       th:href="@{/doctors/delete/{id}(id=${doctor.doctorId})}"
+                       onclick="return confirm('Are you sure you want to delete this doctor?')">
+                        Delete
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(doctors)}"
+             class="col-12 text-center py-5">
+
+            <h5 class="text-muted">No doctors found</h5>
+            <p class="text-muted">
+                Try another search or add a new doctor.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

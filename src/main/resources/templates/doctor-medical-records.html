@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>My Medical Records | CarePoint</title>
+</head>
+<body>
+<div th:fragment="content">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>My Medical Records</h2>
+            <p class="text-muted mb-0">
+                Medical records created by you.
+            </p>
+        </div>
+
+        <a th:href="@{/doctor/dashboard}"
+           class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <div th:if="${error}" class="alert alert-warning"
+         th:text="${error}"></div>
+
+    <div th:if="${doctor != null}" class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Record ID</th>
+                            <th>Patient ID</th>
+                            <th>Date</th>
+                            <th>Diagnosis</th>
+                            <th>Symptoms</th>
+                            <th>Treatment</th>
+                            <th>Medicines</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(medicalRecords)}">
+                            <td colspan="8"
+                                class="text-center text-muted py-4">
+                                No medical records created yet.
+                            </td>
+                        </tr>
+
+                        <tr th:each="record : ${medicalRecords}">
+                            <td th:text="${record.recordId}"></td>
+                            <td th:text="${record.patientId}"></td>
+                            <td th:text="${record.recordDate}"></td>
+                            <td th:text="${record.diagnosis}"></td>
+                            <td th:text="${record.symptoms}"></td>
+                            <td th:text="${record.treatment}"></td>
+                            <td th:text="${record.prescribedMedicines}"></td>
+                            <td th:text="${record.notes}"></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

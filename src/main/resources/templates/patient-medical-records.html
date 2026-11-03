@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Medical Records | CarePoint</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        body {
+            background: #f4f7fb;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background: #173b65;
+        }
+        .page-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        }
+        .record-card {
+            border: 1px solid #e3eaf2;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .field-title {
+            font-weight: bold;
+            color: #173b65;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark px-4 py-3">
+    <span class="navbar-brand fw-bold">CarePoint - Patient Portal</span>
+    <a th:href="@{/patient/dashboard}" class="btn btn-light btn-sm">
+        Back to Dashboard
+    </a>
+</nav>
+
+<div class="container py-5">
+    <div class="page-card">
+
+        <h3>My Medical Records</h3>
+        <p class="text-muted">View your medical history and records.</p>
+
+        <div th:if="${medicalRecords == null or medicalRecords.isEmpty()}"
+             class="alert alert-info">
+            No medical records are available yet.
+        </div>
+
+        <div th:each="record : ${medicalRecords}" class="record-card">
+
+            <h5 class="text-primary">
+                Medical Record #
+                <span th:text="${record.recordId}"></span>
+            </h5>
+
+            <p>
+                <strong>Record Date:</strong>
+                <span th:text="${record.recordDate}"></span>
+            </p>
+            <p>
+    <span class="field-title">Doctor Name:</span>
+    <span th:text="${#vars['doctor_' + record.recordId] != null ? #vars['doctor_' + record.recordId] : 'Not Available'}"></span>
+</p>
+
+            <p>
+                <span class="field-title">Diagnosis:</span>
+                <span th:text="${record.diagnosis}"></span>
+            </p>
+
+            <p th:if="${record.symptoms != null}">
+                <span class="field-title">Symptoms:</span>
+                <span th:text="${record.symptoms}"></span>
+            </p>
+
+            <p th:if="${record.treatment != null}">
+                <span class="field-title">Treatment:</span>
+                <span th:text="${record.treatment}"></span>
+            </p>
+
+            <p th:if="${record.prescribedMedicines != null}">
+                <span class="field-title">Prescribed Medicines:</span>
+                <span th:text="${record.prescribedMedicines}"></span>
+            </p>
+
+            <p th:if="${record.notes != null}">
+                <span class="field-title">Doctor's Notes:</span>
+                <span th:text="${record.notes}"></span>
+            </p>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

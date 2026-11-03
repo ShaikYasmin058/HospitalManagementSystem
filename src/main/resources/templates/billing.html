@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+
+<head>
+    <title>Billing Management</title>
+</head>
+
+<body>
+<div th:fragment="content">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Billing & Payments</h2>
+            <p class="text-muted">Manage patient bills and payment status.</p>
+        </div>
+
+        <a href="/billing/new" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Bill
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Bill ID</th>
+                            <th>Patient</th>
+                            <th>Bill Date</th>
+                            <th>Consultation</th>
+                            <th>Medicine</th>
+                            <th>Treatment</th>
+                            <th>Total Amount</th>
+                            <th>Payment Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr th:each="bill : ${bills}">
+
+                            <td th:text="${bill.billId}"></td>
+
+                            <td>
+                                <span th:each="patient : ${patients}"
+                                      th:if="${patient.patientId == bill.patientId}"
+                                      th:text="${patient.name}">
+                                </span>
+                            </td>
+
+                            <td th:text="${bill.billDate}"></td>
+
+                            <td th:text="${bill.consultationCharge}"></td>
+
+                            <td th:text="${bill.medicineCharge}"></td>
+
+                            <td th:text="${bill.treatmentCharge}"></td>
+
+                            <td class="fw-bold text-success"
+                                th:text="${'₹ ' + bill.totalAmount}">
+                            </td>
+
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${bill.paymentStatus == 'Paid'} ? ' bg-success' : ' bg-warning text-dark'"
+                                      th:text="${bill.paymentStatus}">
+                                </span>
+                            </td>
+
+                            <td>
+                                <a th:href="@{/billing/edit/{id}(id=${bill.billId})}"
+                                   class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a th:href="@{/billing/delete/{id}(id=${bill.billId})}"
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Delete this bill?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(bills)}">
+                            <td colspan="9"
+                                class="text-center text-muted py-4">
+                                No bills available.
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

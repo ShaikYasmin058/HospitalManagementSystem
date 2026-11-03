@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hospital Management System</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .card { border: 1px solid #ddd; padding: 16px; margin-bottom: 16px; border-radius: 8px; }
+    input, select, button { padding: 8px; margin-top: 6px; width: 100%; box-sizing: border-box; }
+    button { cursor: pointer; }
+    #output { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Hospital Management System</h1>
+  <div class="card">
+    <h3>Login</h3>
+    <input id="username" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div class="card">
+    <h3>Add Patient</h3>
+    <input id="patientName" placeholder="Name" />
+    <input id="patientAge" placeholder="Age" />
+    <input id="patientGender" placeholder="Gender" />
+    <input id="patientPhone" placeholder="Phone" />
+    <input id="patientDisease" placeholder="Disease" />
+    <button onclick="addPatient()">Add Patient</button>
+  </div>
+
+  <div class="card">
+    <h3>View Patients</h3>
+    <button onclick="viewPatients()">Load Patients</button>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      alert('Login is handled by the console app. Use admin/admin123 for the desktop console.');
+    }
+
+    function addPatient() {
+      const patient = {
+        name: document.getElementById('patientName').value,
+        age: document.getElementById('patientAge').value,
+        gender: document.getElementById('patientGender').value,
+        phone: document.getElementById('patientPhone').value,
+        disease: document.getElementById('patientDisease').value
+      };
+      document.getElementById('output').textContent = 'Patient data collected: ' + JSON.stringify(patient, null, 2);
+    }
+
+    function viewPatients() {
+      document.getElementById('output').textContent = 'No backend connection yet. The console app is running separately.';
+    }
+  </script>
+</body>
+</html>

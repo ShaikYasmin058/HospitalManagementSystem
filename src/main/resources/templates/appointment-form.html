@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Appointment Form</title>
+</head>
+<body>
+<div th:fragment="content">
+
+    <h2 class="mb-4"
+        th:text="${appointment.id == null ? 'Add Appointment' : 'Edit Appointment'}">
+        Appointment Form
+    </h2>
+
+    <form th:action="@{/appointments}"
+          th:object="${appointment}"
+          method="post"
+          class="card p-4 shadow-sm">
+
+        <input type="hidden" th:field="*{id}" />
+        <div th:if="${#fields.hasGlobalErrors()}"
+     class="alert alert-danger">
+    <ul class="mb-0">
+        <li th:each="error : ${#fields.globalErrors()}"
+            th:text="${error}">
+        </li>
+    </ul>
+</div>
+
+        <div class="mb-3">
+            <label class="form-label">Patient ID</label>
+            <input class="form-control"
+                   type="number"
+                   th:field="*{patientId}"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Doctor ID</label>
+            <input class="form-control"
+                   type="number"
+                   th:field="*{doctorId}"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Appointment Date &amp; Time</label>
+            <input class="form-control"
+                   type="datetime-local"
+                   th:field="*{appointmentDate}"
+                   required />
+        </div>
+
+        <button class="btn btn-primary" type="submit"
+                th:text="${appointment.id == null ? 'Save Appointment' : 'Update Appointment'}">
+            Save
+        </button>
+
+        <a href="/appointments" class="btn btn-secondary mt-2">
+            Back to Appointments
+        </a>
+
+    </form>
+</div>
+</body>
+</html>

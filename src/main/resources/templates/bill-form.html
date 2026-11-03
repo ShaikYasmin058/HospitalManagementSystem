@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+
+<head>
+    <title>Bill Form</title>
+</head>
+
+<body>
+<div th:fragment="content">
+
+    <div class="mb-4">
+        <h2 th:text="${bill.billId == null ? 'Create New Bill' : 'Edit Bill'}">
+            Bill Form
+        </h2>
+        <p class="text-muted">Enter patient billing and payment details.</p>
+    </div>
+
+    <form th:action="@{/billing}"
+          th:object="${bill}"
+          method="post"
+          class="card shadow-sm p-4">
+
+        <input type="hidden" th:field="*{billId}"/>
+
+        <div th:if="${#fields.hasErrors('*')}"
+             class="alert alert-danger">
+            <strong>Please correct the following errors:</strong>
+            <ul class="mb-0">
+                <li th:each="error : ${#fields.allErrors()}"
+                    th:text="${error}">
+                </li>
+            </ul>
+        </div>
+
+        <!-- Patient -->
+        <div class="mb-3">
+            <label class="form-label">Select Patient</label>
+
+            <select class="form-select"
+                    th:field="*{patientId}"
+                    required>
+
+                <option value="">-- Select Patient --</option>
+
+                <option th:each="patient : ${patients}"
+                        th:value="${patient.patientId}"
+                        th:text="${patient.name + ' (ID: ' + patient.patientId + ')'}">
+                </option>
+
+            </select>
+        </div>
+
+        <!-- Bill Date -->
+        <div class="mb-3">
+            <label class="form-label">Bill Date</label>
+
+            <input type="date"
+                   class="form-control"
+                   th:field="*{billDate}"
+                   required/>
+        </div>
+
+        <hr>
+
+        <h5 class="mb-3">Charge Details</h5>
+
+        <!-- Consultation Charge -->
+        <div class="mb-3">
+            <label class="form-label">Consultation Charge (₹)</label>
+
+            <input type="number"
+                   class="form-control"
+                   th:field="*{consultationCharge}"
+                   min="0"
+                   step="0.01"
+                   required/>
+        </div>
+
+        <!-- Medicine Charge -->
+        <div class="mb-3">
+            <label class="form-label">Medicine Charge (₹)</label>
+
+            <input type="number"
+                   class="form-control"
+                   th:field="*{medicineCharge}"
+                   min="0"
+                   step="0.01"
+                   required/>
+        </div>
+
+        <!-- Treatment Charge -->
+        <div class="mb-3">
+            <label class="form-label">Treatment Charge (₹)</label>
+
+            <input type="number"
+                   class="form-control"
+                   th:field="*{treatmentCharge}"
+                   min="0"
+                   step="0.01"
+                   required/>
+        </div>
+
+        <hr>
+
+        <!-- Total Amount -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Total Amount (₹)</label>
+
+            <input type="text"
+                   id="totalAmount"
+                   class="form-control fw-bold text-success"
+                   readonly
+                   value="0.00"/>
+        </div>
+
+        <!-- Payment Status -->
+        <div class="mb-4">
+            <label class="form-label">Payment Status</label>
+
+            <select class="form-select"
+                    th:field="*{paymentStatus}"
+                    required>
+
+                <option value="Pending">Pending</option>
+                <option value="Paid">Paid</option>
+
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i>
+            <span th:text="${bill.billId == null ? 'Create Bill' : 'Update Bill'}">
+                Save Bill
+            </span>
+        </button>
+
+        <a href="/billing" class="btn btn-secondary mt-2">
+            Back to Billing
+        </a>
+
+    </form>
+
+    <script>
+        function calculateTotal() {
+            const consultation =
+                parseFloat(document.getElementById('consultationCharge').value) || 0;
+
+            const medicine =
+                parseFloat(document.getElementById('medicineCharge').value) || 0;
+
+            const treatment =
+                parseFloat(document.getElementById('treatmentCharge').value) || 0;
+
+            const total = consultation + medicine + treatment;
+
+            document.getElementById('totalAmount').value =
+                total.toFixed(2);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('consultationCharge')
+                .addEventListener('input', calculateTotal);
+
+            document.getElementById('medicineCharge')
+                .addEventListener('input', calculateTotal);
+
+            document.getElementById('treatmentCharge')
+                .addEventListener('input', calculateTotal);
+
+            calculateTotal();
+        });
+    </script>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment | CarePoint</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background: #f4f7fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .booking-card {
+            max-width: 650px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        }
+
+        .page-title {
+            color: #1769aa;
+            font-weight: bold;
+        }
+
+        .availability-note {
+            font-size: 13px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="booking-card">
+
+        <h2 class="page-title text-center mb-2">
+            Book an Appointment
+        </h2>
+
+        <p class="text-center text-muted mb-4">
+            Select an available doctor and your preferred appointment date.
+        </p>
+
+        <div th:if="${error != null}"
+             class="alert alert-danger"
+             th:text="${error}">
+        </div>
+
+        <form th:action="@{/patient/appointments/book}"
+              th:object="${appointment}"
+              method="post">
+
+            <div class="mb-3">
+                <label class="form-label">Select Doctor</label>
+
+                <select class="form-select"
+                        th:field="*{doctorId}"
+                        required>
+
+                    <option value="">Choose an available doctor</option>
+
+                    <option th:each="doctor : ${doctors}"
+                            th:value="${doctor.doctorId}"
+                            th:disabled="${doctor.availabilityStatus != 'AVAILABLE'}"
+                            th:text="${doctor.name + ' - ' + doctor.specialization +
+                            ' (' +
+                            (doctor.availabilityStatus == 'AVAILABLE' ? 'Available' :
+                            doctor.availabilityStatus == 'ON_LEAVE' ? 'On Leave' :
+                            'Unavailable') + ')'}">
+                    </option>
+
+                </select>
+
+                <div class="availability-note mt-2">
+                    Only doctors marked Available can be selected.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">
+                    Appointment Date and Time
+                </label>
+
+                <input type="datetime-local"
+                       class="form-control"
+                       th:field="*{appointmentDate}"
+                       id="appointmentDate"
+                       required>
+
+                <div class="availability-note mt-2">
+                    Past dates and times cannot be selected.
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+
+                <button type="submit" class="btn btn-primary">
+                    Book Appointment
+                </button>
+
+                <a th:href="@{/patient/appointments}"
+                   class="btn btn-outline-secondary">
+                    Back to My Appointments
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+    const appointmentDate = document.getElementById("appointmentDate");
+
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+    appointmentDate.min = now.toISOString().slice(0, 16);
+</script>
+
+</body>
+</html>

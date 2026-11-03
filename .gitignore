@@ -1,0 +1,22 @@
+# Java build files
+target/
+*.class
+
+# VS Code settings
+.vscode/
+
+# Local database files
+*.mv.db
+*.trace.db
+
+# User uploads
+uploads/
+
+# Environment and secrets
+.env
+application-local.properties
+
+# IDE files
+.classpath
+.project
+.settings/
