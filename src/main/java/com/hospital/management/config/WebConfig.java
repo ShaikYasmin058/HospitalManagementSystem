@@ -34,6 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/patient/profile/new",
                         "/patient/profile",
                         "/patient/medical-records",
+                        "/patient/billing",
                         "/patient/appointments/cancel/**",
                         "/doctor/dashboard",
                         "/doctor/appointments",

@@ -52,6 +52,7 @@ public class AuthInterceptor implements HandlerInterceptor {
                 || path.equals("/patient/profile/new")
                 || path.equals("/patient/profile")
                 || path.equals("/patient/medical-records")
+                || path.equals("/patient/billing")
                 || path.startsWith("/patient/appointments/cancel/"))) {
 
             return true;
